@@ -1,0 +1,88 @@
+local SERVER_ID = 133
+local TEMP_FILE = ".website.lua" 
+local BACKCOLOR = colors.black
+local TEXTCOLOR = colors.white
+-------------------------------------------
+
+    function loadUI()
+    term.clear()
+    term.setBackgroundColor(BACKCOLOR)
+    term.setTextColor(TEXTCOLOR)
+    term.clear()
+    term.setCursorPos(1,2)
+    term.write("------------------------------------------------------------------------------------------------------------------------------------------------------")
+    term.setCursorPos(1,1)
+    term.write("Adresa> ")
+    end
+
+loadUI()
+
+local function fetchAndRun(domain)
+    print("\n--- FETCHING: " .. domain .. " ---")
+    rednet.send(SERVER_ID, domain) 
+    
+    local sender_id, file_code = rednet.receive(5) 
+    
+    if file_code == nil then
+        print("ERROR: Server neodpovedel vcas nebo odeslal neplatnou odpoved.")
+        sleep(3)
+        loadUI()
+        return
+    end
+
+    if file_code == "404 NOT FOUND" then
+        print("ERROR: Domena '" .. domain .. "' nebyla nalezena (404: Forbidden).")
+        sleep(3)
+        loadUI()
+        return
+    end
+    
+    if file_code and type(file_code) == "string" then
+        
+        local sanitized_code = string.gsub(file_code, "^%s*(.-)%s*$", "%1")
+        sanitized_code = string.gsub(sanitized_code, "\xEF\xBB\xBF", "")
+
+        local temp_file_handle = fs.open(TEMP_FILE, "w")
+        temp_file_handle.write(sanitized_code)
+        temp_file_handle.close()
+        
+        print("Code received. Starting program...")
+        
+        local success, err_msg = pcall(function()
+            shell.run(TEMP_FILE) 
+        end)
+        
+        if not success then
+            print("\n!!! Program execution failed! !!!")
+            print("Details: " .. tostring(err_msg))
+            -- Necháme soubor pro kontrolu chyb
+            print("File not deleted. Check '"..TEMP_FILE.."' for errors.")
+        else
+            print("\nProgram finished successfully.")
+            fs.delete(TEMP_FILE)
+            loadUI()
+        end
+        
+    else
+        print("ERROR: Received data was not a valid code string (Type: " .. type(file_code) .. ").")
+        sleep(3)
+        loadUI()
+    end
+end
+
+peripheral.find("modem", rednet.open)
+
+while true do
+    
+    local domain_input = read() 
+    
+    -- Kontrola, zda vstup není prázdný, není "0", a není čisté číslo
+    if domain_input and domain_input ~= "" and domain_input ~= "0" and tonumber(domain_input) == nil then
+        fetchAndRun(domain_input)
+    else
+        -- Pokud je vstup neplatný, vypíšeme upozornění
+        print("Invalid input. Please enter a domain name.")
+        sleep(1)
+        loadUI()
+    end
+end

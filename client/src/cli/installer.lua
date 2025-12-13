@@ -1,6 +1,6 @@
 --Download
 local version = 1.0
-local iversion = 1.0
+local iversion = 1.1
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -29,14 +29,17 @@ print("Connecting to https://raw.githubusercontent/MC-GGHJK/MC-Server-Internet/C
 print("")
 sleep(10)
 print("Downloading...")
-sleep(2)
-print("Downloading web.lua")
-sleep(2)
-print("Downloading web-client.lua")
-sleep(2)
 fs.delete("gghjk-system/web-client.lua")
-shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua")
+fs.delete("web.lua")
+sleep(2)
+print("Downloading web-client.lua...")
 shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web-client.lua gghjk-system/web-client.lua")
+sleep(2)
+print("Downloading web.lua...")
+sleep(2)
+shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua")
+sleep(2)
+print("Connecting to Server htpps://download.gghjk.net/mc/internet/client/src/")
 sleep(5)
 print("")
 print("Dont open gghjk-system/web-client.lua  Its System file of GGHJk System")

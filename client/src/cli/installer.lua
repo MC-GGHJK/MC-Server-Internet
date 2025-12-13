@@ -1,5 +1,5 @@
 --Download
-local version = 1.0
+local version = 1.2
 local iversion = 1.1
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray

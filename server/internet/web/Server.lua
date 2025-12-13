@@ -1,7 +1,7 @@
 --DNS Records
 local DOMAIN_MAP = {
     ["ai.net"] = "disk/internet/google/ai/src/ai-client",
-    ["cloud.net"] = "disk/internet/cloud/src/cloud-client"
+    ["music.cc"] = "disk/internet/music/src/music.lua"
 }
 ------------------------------------------------------------------
 local function log(message)

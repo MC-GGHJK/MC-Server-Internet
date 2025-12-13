@@ -29,7 +29,7 @@ print("Connecting to https://raw.githubusercontent/MC-GGHJK/MC-Server-Internet/C
 print("")
 sleep(10)
 print("Downloading...")
-slept(2)
+sleep(2)
 print("Downloading web.lua")
 sleep(2)
 print("Downloading web-client.lua")

@@ -3,6 +3,8 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
+local ver = "1.2"
+local nver = 
 
 local w, h = term.getSize()
     function loadUI()
@@ -10,8 +12,10 @@ local w, h = term.getSize()
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(TEXTCOLOR)
     term.clear()
-    term.setCursorPos(1,h-1)
+    term.setCursorPos(1,h-2)
     term.write("GGHJK Internet browser 2025")
+    term.setCursorPos(1,h-1)
+    term.write('Version '..ver..' / ' ..nver..)
     term.setCursorPos(1,h)
     term.write("More at discord, #gghjk-internet.")
     term.setCursorPos(1,2)

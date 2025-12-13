@@ -1,6 +1,6 @@
 --Download
-local version = 0.9
-local iversion = 0.9
+local version = 1.0
+local iversion = 1.0
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -45,7 +45,9 @@ print("Installation Complete!")
 sleep(5)
 elseif rspn == "N" then
 print("Canceling Installation...")
-sleep(5)
+sleep(10)
+print("Installation Canceled.")
+sleep(0.9)
 term.clear()
 term.setBackgroundColor(colors.black)
 term.setTextColor(colors.white)

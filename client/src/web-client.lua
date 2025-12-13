@@ -1,14 +1,19 @@
 local SERVER_ID = 133
 local TEMP_FILE = ".website.lua" 
-local BACKCOLOR = colors.black
-local TEXTCOLOR = colors.white
+local BACKCOLOR = colors.gray
+local TEXTCOLOR = colors.orange
 -------------------------------------------
 
+local w, h = term.getSize()
     function loadUI()
     term.clear()
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(TEXTCOLOR)
     term.clear()
+    term.setCursorPos(1,h-1)
+    term.write("GGHJK Internet browser 2025")
+    term.setCursorPos(1,h)
+    term.write("More at discord, #gghjk-internet.")
     term.setCursorPos(1,2)
     term.write("------------------------------------------------------------------------------------------------------------------------------------------------------")
     term.setCursorPos(1,1)

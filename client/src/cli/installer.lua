@@ -1,6 +1,6 @@
 --Download
 local version = 0.9
-local iversion = 0.8
+local iversion = 0.9
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -40,6 +40,9 @@ shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/re
 sleep(5)
 print("")
 print("Dont open gghjk-system/web-client.lua  Its System file of GGHJk System")
+print('To run web client "type web" in the terminal')
+print("Installation Complete!")
+sleep(5)
 elseif rspn == "N" then
 print("Canceling Installation...")
 sleep(5)
@@ -50,3 +53,7 @@ term.clear()
 else
 return
 end
+term.clear()
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
+term.clear()

@@ -8,7 +8,7 @@ if r then
   nver = tonumber(r.readAll()) or "?"
   r.close()
 end
-local iversion = 1.3
+local iversion = 1.31
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -56,6 +56,7 @@ print('')
 print("")
 print("Dont open gghjk-system/web-client.lua  Its System file of GGHJk System")
 print('To run web client "type web" in the terminal')
+print('Web client directory: web.lua')
 print("Installation Complete!")
 sleep(5)
 elseif rspn == "N" or rspn == "n" then

@@ -8,7 +8,7 @@ if r then
   nver = tonumber(r.readAll()) or "?"
   r.close()
 end
-local iversion = 1.21
+local iversion = 1.3
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -23,11 +23,11 @@ print("Prida se:")
 print("-gghjk-client/web-client.lua")
 print("-web.lua")
 print("")
-print("Napiste Y pro instalaci")
-print("Nebo N pro zruseni")
+print("Napiste Y/y pro instalaci")
+print("Nebo N/n pro zruseni")
 print("")
 local rspn = read()
-if rspn == "Y" then
+if rspn == "Y" or rspn == "y" then
 print('Running Installer Version '..iversion.. ' Please Wait..' )
 sleep(2)
 print("")
@@ -58,7 +58,7 @@ print("Dont open gghjk-system/web-client.lua  Its System file of GGHJk System")
 print('To run web client "type web" in the terminal')
 print("Installation Complete!")
 sleep(5)
-elseif rspn == "N" then
+elseif rspn == "N" or rspn == "n" then
 print("Canceling Installation...")
 fs.delete('internet_installer.java')
 shell.run('wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua internet_installer.java')

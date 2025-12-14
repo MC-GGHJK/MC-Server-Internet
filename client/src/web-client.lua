@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.43
+local ver = 1.5
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -66,6 +66,11 @@ local function fetchAndRun(domain)
         print("Code received. Starting program...")
         
         local success, err_msg = pcall(function()
+        term.clear()
+        term.setBackgroundColor(colors.black)
+        term.setTextColor(colors.white)
+        term.clear()
+        sleep(0.1)
             shell.run(TEMP_FILE) 
         end)
         

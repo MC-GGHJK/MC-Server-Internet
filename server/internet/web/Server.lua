@@ -3,7 +3,8 @@ local DOMAIN_MAP = {
     ["ai.net"] = "disk/internet/google/ai/src/ai-client",
     ["music.cc"] = "disk/internet/music/src/main.lua",
     ["news.net"] = "disk/internet/news/src/main.lua",
-    ["update.net"] = "disk/internet/update/src/update.lua"
+    ["update.net"] = "disk/internet/update/src/update.lua",
+    ["host.net"] = "disk/internet/host/src/host.lua"
 }
 ------------------------------------------------------------------
 local function log(message)

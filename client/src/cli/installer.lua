@@ -1,6 +1,14 @@
 --Download
-local version = 1.2
-local iversion = 1.1
+local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
+
+local nver = "?"
+local r = http.get(nverurl)
+
+if r then
+  nver = tonumber(r.readAll()) or "?"
+  r.close()
+end
+local iversion = 1.2
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -23,9 +31,10 @@ if rspn == "Y" then
 print('Running Installer Version '..iversion..' Please Wait..' )
 sleep(2)
 print("")
-print('Installing Internet Version ' ..version.. ' Please Wait...')
+print('Installing Internet Version ' ..nver.. ' Please Wait...')
 print("")
 print("Connecting to https://raw.githubusercontent/MC-GGHJK/MC-Server-Internet/Client")
+print("Connecting to Server...")
 print("")
 sleep(10)
 print("Downloading...")

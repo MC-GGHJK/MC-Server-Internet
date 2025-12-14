@@ -8,16 +8,7 @@ if r then
   nver = tonumber(r.readAll()) or "?"
   r.close()
 end
-local iversion = 1.2
-local inverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/iversion.txt'
-
-local inversion = "?"
-local r = http.get(inverurl)
-
-if r then
-  nver = tonumber(r.readAll()) or "?"
-  r.close()
-end
+local iversion = 1.21
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
@@ -37,7 +28,7 @@ print("Nebo N pro zruseni")
 print("")
 local rspn = read()
 if rspn == "Y" then
-print('Running Installer Version '..iversion.. ' / '..inversion..' Please Wait..' )
+print('Running Installer Version '..iversion.. ' Please Wait..' )
 sleep(2)
 print("")
 print('Installing Internet Version ' ..nver.. ' Please Wait...')

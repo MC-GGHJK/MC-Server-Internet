@@ -37,7 +37,7 @@ print("Nebo N pro zruseni")
 print("")
 local rspn = read()
 if rspn == "Y" then
-print('Running Installer Version '..iversion.. ' / '..niversion..' Please Wait..' )
+print('Running Installer Version '..iversion.. ' / '..inversion..' Please Wait..' )
 sleep(2)
 print("")
 print('Installing Internet Version ' ..nver.. ' Please Wait...')

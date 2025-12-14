@@ -7,7 +7,7 @@ local ver = 1.2
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
-local r = http.get(url)
+local r = http.get(nverurl)
 
 if r then
   nver = tonumber(r.readAll()) or "?"

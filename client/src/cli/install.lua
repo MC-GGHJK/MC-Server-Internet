@@ -1,1 +1,1 @@
-shell.run(pastebin run vkKmg99G)
+shell.run('pastebin run vkKmg99G')

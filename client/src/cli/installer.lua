@@ -50,6 +50,7 @@ shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/re
 sleep(2)
 print("Connecting to Server https://download.gghjk.net/mc/internet/client/src/")
 sleep(5)
+print('')
 print("")
 print("Dont open gghjk-system/web-client.lua  Its System file of GGHJk System")
 print('To run web client "type web" in the terminal')

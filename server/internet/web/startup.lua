@@ -1,3 +1,15 @@
 --System Boot
+term.clear()
+term.setCursorPos(1,1)
+print("Booting GGHJK Internet Server System...")
+sleep(5)
+term.clear()
+term.setCursorPos(1,1)
+print("Starting Shell...")
+sleep(5)
+term.clear()
+term.setCursorPos(1,1)
+term.write('root@Server: /home/server# ')
+
 multishell.launch({}, "disk/internet/Server")
 multishell.launch({}, "disk/internet/google/ai/src/AI")

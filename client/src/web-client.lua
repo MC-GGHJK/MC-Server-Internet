@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.61
+local ver = 1.63
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -27,12 +27,10 @@ local w, h = term.getSize()
     if ver < nver then
       term.setCursorPos(1,h-1)
       term.write('A new version '..nver..' available!')
-    end
-    if ver >= nver then
+    elseif ver >= nver then
       term.setCursorPos(1,h-1)
       term.write('You are up to date!')
-    end
-    if ver == "?" then
+    elseif ver == "?" then
       term.setCursorPos(1,h-1)
       term.write('Unable to check for updates!')
     end

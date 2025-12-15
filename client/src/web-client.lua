@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.54
+local ver = 1.6
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -32,6 +32,10 @@ local w, h = term.getSize()
       term.setCursorPos(1,h-1)
       term.write('You are up to date!')
     end
+    if ver == "?" then
+      term.setCursorPos(1,h-1)
+      term.write('Unable to check for updates!')
+    end
     term.setCursorPos(1,h)
     term.write("More at discord, #gghjk-internet.")
     term.setCursorPos(1,2)
@@ -50,6 +54,8 @@ local function fetchAndRun(domain)
     
     if file_code == nil then
         print("ERROR: Server neodpovedel vcas nebo odeslal neplatnou odpoved.")
+        print("Zkontrolujte pripojeni k siti nebo spravnost domeny.")
+        print("Timed Out.")
         sleep(3)
         loadUI()
         return

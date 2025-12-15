@@ -8,12 +8,22 @@ if r then
   nver = tonumber(r.readAll()) or "?"
   r.close()
 end
-local iversion = 1.31
+local iversion = 1.39
 local TEXTCOLOR = colors.orange
 local BACKCOLOR = colors.gray
  
 term.setBackgroundColor(BACKCOLOR)
 term.setTextColor(TEXTCOLOR)
+term.clear()
+print("Welcome to the Update Client!")
+sleep(2)
+print("Checking for updates...")
+print("Loading updater...")
+sleep(5)
+sleep(2)
+print("Current newest version: "..nver)
+print("Launching updater...")
+sleep(2)
 term.clear()
 print("Odstrani se:")
 print("-gghjk-system/web-client.lua")

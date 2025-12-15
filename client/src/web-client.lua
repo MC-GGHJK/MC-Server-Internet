@@ -26,7 +26,7 @@ local w, h = term.getSize()
     term.write('Version '..ver..' / '..nver)
     if ver < nver then
       term.setCursorPos(1,h-1)
-      term.write('New version '..nver..' available!')
+      term.write('A new version '..nver..' available!')
     end
     if ver >= nver then
       term.setCursorPos(1,h-1)

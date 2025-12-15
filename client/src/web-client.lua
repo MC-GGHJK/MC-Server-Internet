@@ -24,7 +24,7 @@ local w, h = term.getSize()
     term.write("(c)2025 GGHJK - Internet browser 2025")
     term.setCursorPos(1,h-2)
     term.write('Version '..ver..' / '..nver)
-    if ver < nver then
+    if ver ==< nver then
       term.setCursorPos(1,h-1)
       term.write('New version '..nver..' available!')
     end

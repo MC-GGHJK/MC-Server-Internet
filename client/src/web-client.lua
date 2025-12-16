@@ -20,15 +20,10 @@ local w, h = term.getSize()
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(TEXTCOLOR)
     term.clear()
-    term.setCursorPos(1,h-5)
-    term.write("(c)2025 GGHJK - Internet browser 2025")
-    term.setCursorPos(1,h-6)
-    term.write('Version '..ver..' / '..nver)
     term.setCursorPos(1,h-3)
-    term.write('Type a domain name for example: ')
+    term.write("(c)2025 GGHJK - Internet browser 2025")
     term.setCursorPos(1,h-2)
-    term.write('"example.net" and "example.cc"')
-
+    term.write('Version '..ver..' / '..nver)
 
     if ver < nver then
       term.setCursorPos(1,h-1)
@@ -41,7 +36,7 @@ local w, h = term.getSize()
       term.write('Unable to check for updates!')
     end
 
-    
+
     term.setCursorPos(1,h)
     term.write("More at discord, #gghjk-internet.")
     term.setCursorPos(1,2)

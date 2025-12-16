@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.63
+local ver = 1.65
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -20,10 +20,12 @@ local w, h = term.getSize()
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(TEXTCOLOR)
     term.clear()
-    term.setCursorPos(1,h-3)
+    term.setCursorPos(1,h-4)
     term.write("(c)2025 GGHJK - Internet browser 2025")
-    term.setCursorPos(1,h-2)
+    term.setCursorPos(1,h-3)
     term.write('Version '..ver..' / '..nver)
+    term.setCursorPos(1,h-2)
+    term.write('Type a domain name for example: "example.net" and "example.cc"')
     if ver < nver then
       term.setCursorPos(1,h-1)
       term.write('A new version '..nver..' available!')
@@ -53,6 +55,7 @@ local function fetchAndRun(domain)
     if file_code == nil then
         print("ERROR: Server neodpovedel vcas nebo odeslal neplatnou odpoved.")
         print("Zkontrolujte pripojeni k siti nebo spravnost domeny.")
+        print("Polud problem pretrva, Kontaktujte podporu.")
         print("Timed Out.")
         sleep(3)
         loadUI()
@@ -116,6 +119,9 @@ while true do
     else
         -- Pokud je vstup neplatný, vypíšeme upozornění
         print("Invalid input. Please enter a domain name.")
+        print("Domain names cannot be empty, '0', or purely numeric.")
+        print("Try again.")
+        print("")
         sleep(1)
         loadUI()
     end

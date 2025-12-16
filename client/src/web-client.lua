@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.65
+local ver = 1.69
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -20,12 +20,16 @@ local w, h = term.getSize()
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(TEXTCOLOR)
     term.clear()
-    term.setCursorPos(1,h-4)
+    term.setCursorPos(1,h-5)
     term.write("(c)2025 GGHJK - Internet browser 2025")
-    term.setCursorPos(1,h-3)
+    term.setCursorPos(1,h-6)
     term.write('Version '..ver..' / '..nver)
+    term.setCursorPos(1,h-3)
+    term.write('Type a domain name for example: ')
     term.setCursorPos(1,h-2)
-    term.write('Type a domain name for example: "example.net" and "example.cc"')
+    term.write('"example.net" and "example.cc"')
+
+
     if ver < nver then
       term.setCursorPos(1,h-1)
       term.write('A new version '..nver..' available!')
@@ -36,6 +40,8 @@ local w, h = term.getSize()
       term.setCursorPos(1,h-1)
       term.write('Unable to check for updates!')
     end
+
+    
     term.setCursorPos(1,h)
     term.write("More at discord, #gghjk-internet.")
     term.setCursorPos(1,2)

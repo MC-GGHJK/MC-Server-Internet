@@ -92,7 +92,6 @@ local function fetchAndRun(domain)
         if not success then
             print("\n!!! Program execution failed! !!!")
             print("Details: " .. tostring(err_msg))
-            -- Necháme soubor pro kontrolu chyb
             print("File not deleted. Check '"..TEMP_FILE.."' for errors.")
         else
             print("\nProgram finished successfully.")
@@ -113,11 +112,9 @@ while true do
     
     local domain_input = read() 
     
-    -- Kontrola, zda vstup není prázdný, není "0", a není čisté číslo
     if domain_input and domain_input ~= "" and domain_input ~= "0" and tonumber(domain_input) == nil then
         fetchAndRun(domain_input)
     else
-        -- Pokud je vstup neplatný, vypíšeme upozornění
         print("Invalid input. Please enter a domain name.")
         print("Domain names cannot be empty, '0', or purely numeric.")
         print("Try again.")

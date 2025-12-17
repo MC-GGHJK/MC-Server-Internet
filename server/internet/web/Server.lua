@@ -4,7 +4,8 @@ local DOMAIN_MAP = {
     ["music.cc"] = "disk/internet/music/src/main.lua",
     ["news.net"] = "disk/internet/news/src/main.lua",
     ["update.net"] = "disk/internet/update/src/update.lua",
-    ["host.net"] = "disk/internet/host/src/host.lua"
+    ["host.net"] = "disk/internet/host/src/host.lua",
+    ["info.net"] = "disk/internet/info/src/info-client.lua"
 }
 ------------------------------------------------------------------
 local function log(message)

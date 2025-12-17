@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.69
+local ver = 1.7
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -32,6 +32,12 @@ local w, h = term.getSize()
       term.setCursorPos(1,h-1)
       term.write('You are up to date!')
     elseif nver == "?" then
+      term.setCursorPos(1,h-1)
+      term.write('Unable to check for updates!')
+    elseif ver == nver then
+      term.setCursorPos(1,h-1)
+      term.write('You are up to date!')
+    else
       term.setCursorPos(1,h-1)
       term.write('Unable to check for updates!')
     end
@@ -120,7 +126,7 @@ while true do
         print("Domain names cannot be empty, '0', or purely numeric.")
         print("Try again.")
         print("")
-        sleep(1)
+        sleep(3)
         loadUI()
     end
 end

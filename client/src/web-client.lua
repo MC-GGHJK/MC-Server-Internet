@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.7
+local ver = 1.71
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -21,7 +21,7 @@ local w, h = term.getSize()
     term.setTextColor(TEXTCOLOR)
     term.clear()
     term.setCursorPos(1,h-3)
-    term.write("(c)2025 GGHJK - Internet browser 2025")
+    term.write("(c)2025-2026 GGHJK - Internet browser 2026 Version "..ver)
     term.setCursorPos(1,h-2)
     term.write('Version '..ver..' / '..nver)
 
@@ -41,7 +41,6 @@ local w, h = term.getSize()
       term.setCursorPos(1,h-1)
       term.write('Unable to check for updates!')
     end
-
 
     term.setCursorPos(1,h)
     term.write("More at discord, #gghjk-internet.")
@@ -64,6 +63,7 @@ local function fetchAndRun(domain)
         print("Zkontrolujte pripojeni k siti nebo spravnost domeny.")
         print("Polud problem pretrva, Kontaktujte podporu.")
         print("Timed Out.")
+        print("--------------------------------------------------")
         sleep(3)
         loadUI()
         return
@@ -71,6 +71,7 @@ local function fetchAndRun(domain)
 
     if file_code == "404 NOT FOUND" then
         print("ERROR: Domena '" .. domain .. "' nebyla nalezena (404: Forbidden).")
+        print("--------------------------------------------------")
         sleep(3)
         loadUI()
         return
@@ -100,14 +101,19 @@ local function fetchAndRun(domain)
             print("\n!!! Program execution failed! !!!")
             print("Details: " .. tostring(err_msg))
             print("File not deleted. Check '"..TEMP_FILE.."' for errors.")
+            print("--------------------------------------------------")
         else
             print("\nProgram finished successfully.")
+            print("--------------------------------------------------")
             fs.delete(TEMP_FILE)
             loadUI()
         end
         
     else
         print("ERROR: Received data was not a valid code string (Type: " .. type(file_code) .. ").")
+        print("Cannot execute.")
+        print("Contact support if the problem persists.")
+        print("---------------------------------------------------")
         sleep(3)
         loadUI()
     end
@@ -125,6 +131,7 @@ while true do
         print("Invalid input. Please enter a domain name.")
         print("Domain names cannot be empty, '0', or purely numeric.")
         print("Try again.")
+        print("---------------------------------------------------")
         print("")
         sleep(3)
         loadUI()

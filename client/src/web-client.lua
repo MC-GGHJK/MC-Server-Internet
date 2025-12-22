@@ -43,7 +43,7 @@ local w, h = term.getSize()
     end
 
     term.setCursorPos(1,h)
-    term.write("More at discord, #gghjk-internet. Support at discord.gghjk.qzz.io")
+    term.write("More at discord, #gghjk-internet.")
     term.setCursorPos(1,2)
     term.write("------------------------------------------------------------------------------------------------------------------------------------------------------")
     term.setCursorPos(1,1)

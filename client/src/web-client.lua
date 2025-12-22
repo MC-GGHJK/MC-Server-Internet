@@ -3,7 +3,7 @@ local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
 -------------------------------------------
-local ver = 1.71
+local ver = 1.75
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -43,7 +43,7 @@ local w, h = term.getSize()
     end
 
     term.setCursorPos(1,h)
-    term.write("More at discord, #gghjk-internet.")
+    term.write("More at discord, #gghjk-internet. Support at discord.gghjk.qzz.io")
     term.setCursorPos(1,2)
     term.write("------------------------------------------------------------------------------------------------------------------------------------------------------")
     term.setCursorPos(1,1)

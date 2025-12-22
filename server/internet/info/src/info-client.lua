@@ -9,12 +9,19 @@ if r then
   r.close()
 end
 
-print("Current version: " .. cver)
+local report_url = "https://github.com/MC-GGHJK/MC-Server-Internet/issues"
+local web_url = "https://gghjk.qzz.io"
+local discord_url = "https://discord.gghjk.qzz.io"
+local chat_url = "https://chat.gghjk.qzz.io"
+local github_url = "https://github.com/MC-GGHJK"
+
+
 print("Latest version: " .. nver)
-if tonumber(cver) < nver then
-  print("A new version " .. nver .. " is available! Please update your client.")
-else
-  print("You are up to date!")
-end
-print("More at discord, #gghjk-internet.")
-print("(c)2025 GGHJK - Internet browser 2025")
+
+print("Web: " .. web_url)
+print("Discord: " .. discord_url)
+print("Chat Web: " .. chat_url)
+print("GitHub: " .. github_url)
+print("Report issues at: " .. report_url)
+print("More at discord, #gghjk-internet. Support at discord.gghjk.qzz.io")
+print("(c)2025 GGHJK - Internet browser 2026")

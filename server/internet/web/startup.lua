@@ -9,7 +9,7 @@ print("Starting Shell...")
 sleep(5)
 term.clear()
 term.setCursorPos(1,1)
-term.write('root@Server: /home/server# ')
+term.write('root@Server-root:-# ')
 
 multishell.launch({}, "disk/internet/Server")
 multishell.launch({}, "disk/internet/google/ai/src/AI")

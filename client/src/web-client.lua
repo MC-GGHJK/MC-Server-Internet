@@ -29,6 +29,14 @@ local function drawUI()
     term.setCursorPos(1, h)
     term.clearLine()
     
+local function checkVersion()
+    local r = http.get(NVERURL)
+    if r then
+        nver = r.readAll():gsub("%s+", "")
+        r.close()
+    end
+end
+
     if ver < nver then
 
       term.setCursorPos(1,h-1)
@@ -60,13 +68,6 @@ local function drawUI()
       term.write('Unable to check for updates!')
 
     end
-local function checkVersion()
-    local r = http.get(NVERURL)
-    if r then
-        nver = r.readAll():gsub("%s+", "")
-        r.close()
-    end
-end
 
 local function showError(msg)
     term.setBackgroundColor(BACKCOLOR)

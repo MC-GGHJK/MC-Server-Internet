@@ -1,157 +1,118 @@
-local SERVER_ID = 133
-local TEMP_FILE = ".website.lua"
-local BACKCOLOR = colors.gray
-local TEXTCOLOR = colors.orange
-local ver = 2.0
-local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
+-- GGHJK INTERNET UPDATER v1.39
+-- Bez diakritiky pro maximalni kompatibilitu
 
-local nver = "?"
+local URL_VERSION = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
+local URL_SRC_CLIENT = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web-client.lua'
+local URL_SRC_WEB = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua'
+local URL_INSTALLER = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua'
+
+local IVERSION = 1.39
+local TEXTCOLOR = colors.orange
+local BACKCOLOR = colors.gray
 local w, h = term.getSize()
 
-peripheral.find("modem", rednet.open)
-
-local function drawUI()
+-- FUNKCE PRO UI
+local function drawHeader(title)
     term.setBackgroundColor(BACKCOLOR)
     term.clear()
-    
     term.setCursorPos(1, 1)
-    term.setBackgroundColor(colors.white)
-    term.clearLine()
-    term.setTextColor(colors.gray)
-    term.write("gghjk://")
-    
-    term.setCursorPos(1, 2)
-    term.setBackgroundColor(BACKCOLOR)
-    term.setTextColor(colors.black)
-    term.write(string.rep("-", w))
-
     term.setBackgroundColor(colors.black)
-    term.setCursorPos(1, h)
+    term.setTextColor(colors.yellow)
     term.clearLine()
+    print(" GGHJK UPDATER - " .. (title or "Sytem"))
+    term.setBackgroundColor(BACKCOLOR)
+    term.setTextColor(TEXTCOLOR)
+end
+
+local function status(msg, color)
+    term.setTextColor(color or colors.white)
+    print(" > " .. msg)
+end
+
+-- START PROGRAMU
+drawHeader("Kontrola")
+status("Overovani verze na GitHubu...", colors.lightGray)
+
+local nver = "?"
+local r = http.get(URL_VERSION)
+if r then
+    nver = r.readAll():gsub("%s+", "") -- Odstrani mezery/radky
+    r.close()
+end
+
+sleep(1)
+status("Aktualni verze na serveru: " .. nver, colors.green)
+sleep(1)
+
+-- INFORMACE O INSTALACI
+drawHeader("Instalace")
+print("\n Chysta se aktualizace systemu.")
+term.setTextColor(colors.red)
+print(" Odstrani se:")
+print(" - gghjk-system/web-client.lua")
+print(" - web.lua")
+
+print("\n")
+term.setTextColor(colors.green)
+print(" Prida se:")
+print(" - gghjk-system/web-client.lua")
+print(" - web.lua")
+
+print("\n")
+term.setTextColor(colors.yellow)
+write(" Pokracovat v instalaci? (Y/N): ")
+local rspn = read():lower()
+
+if rspn == "y" then
+    drawHeader("Probiha zapis")
+    status("Instalator v" .. IVERSION .. " spusten.", colors.yellow)
+    status("Cilova verze: " .. nver, colors.yellow)
     
-local function checkVersion()
-    local r = http.get(NVERURL)
-    if r then
-        nver = r.readAll():gsub("%s+", "")
-        r.close()
-    end
-end
+    -- MAZANI STARYCH SOUBORU
+    status("Cisteni starych souboru...", colors.lightGray)
+    if fs.exists("gghjk-system/web-client.lua") then fs.delete("gghjk-system/web-client.lua") end
+    if fs.exists("web.lua") then fs.delete("web.lua") end
+    sleep(1.5)
 
-    if ver < nver then
+    -- STAHYOVANI
+    status("Stahovani z GitHubu...", colors.white)
+    
+    -- Web Client
+    shell.run("wget " .. URL_SRC_CLIENT .. " gghjk-system/web-client.lua")
+    status("Soubor 'web-client.lua' ulozen.", colors.green)
+    
+    -- Web script
+    shell.run("wget " .. URL_SRC_WEB .. " web.lua")
+    status("Soubor 'web.lua' ulozen.", colors.green)
+    
+    -- Update instalatoru (prejmenovano z .java na .lua pro logiku)
+    if fs.exists("internet_installer.java") then fs.delete("internet_installer.java") end
+    shell.run("wget " .. URL_INSTALLER .. " internet_installer.java")
+    
+    status("Cisteni docasnych souboru...", colors.lightGray)
+    sleep(2)
 
-      term.setCursorPos(1,h-1)
-
-      term.write('A new version '..nver..' available!')
-
-    elseif ver >= nver then
-
-      term.setCursorPos(1,h-1)
-
-      term.write('You are up to date!')
-
-    elseif nver == "?" then
-
-      term.setCursorPos(1,h-1)
-
-      term.write('Unable to check for updates!')
-
-    elseif ver == nver then
-
-      term.setCursorPos(1,h-1)
-
-      term.write('You are up to date!')
-
-    else
-
-      term.setCursorPos(1,h-1)
-
-      term.write('Unable to check for updates!')
-
-    end
-
-local function showError(msg)
-    term.setBackgroundColor(BACKCOLOR)
-    term.setTextColor(colors.red)
-    term.setCursorPos(1, 4)
-    print(" [!] ERROR: " .. msg)
-    sleep(3)
-    drawUI()
-end
-
-local function fetchAndRun(domain)
-    term.setBackgroundColor(BACKCOLOR)
-    term.setCursorPos(1, 4)
+    drawHeader("Hotovo")
+    term.setTextColor(colors.green)
+    print("\n INSTALACE USPESNE DOKONCENA!")
     term.setTextColor(colors.white)
-    print(" Propojovani s dns://" .. domain .. "...")
+    print(" ------------------------------------------------")
+    print(" Webovy klient spustite prikazem: web")
+    print(" Nedotykejte se souboru v 'gghjk-system/'.")
+    print(" ------------------------------------------------")
+    sleep(5)
 
-    rednet.send(SERVER_ID, domain)
-    local sender_id, file_code = rednet.receive(5)
-    
-    if not file_code then
-        showError("Casovy limit vyprsel.")
-        return
-    end
-
-    if file_code == "404 NOT FOUND" then
-        showError("Stranka nenalezena.")
-        return
-    end
-    
-    if type(file_code) == "string" then
-        local sanitized_code = file_code:gsub("^\xEF\xBB\xBF", ""):gsub("^%s*(.-)%s*$", "%1")
-
-        local f = fs.open(TEMP_FILE, "w")
-        f.write(sanitized_code)
-        f.close()
-        
-        print(" Data prijata. Renderovani...")
-        sleep(0.5)
-        
-        local success, err = pcall(function()
-            term.setBackgroundColor(colors.black)
-            term.setTextColor(colors.white)
-            term.clear()
-            term.setCursorPos(1, 1)
-            shell.run(TEMP_FILE)
-        end)
-        
-        if not success then
-            term.setBackgroundColor(BACKCOLOR)
-            term.setTextColor(colors.red)
-            print("\n CRASH: " .. tostring(err))
-            sleep(5)
-        else
-            term.setBackgroundColor(BACKCOLOR)
-            term.setTextColor(colors.green)
-            print("\n Prenos ukoncen.")
-            sleep(1.5)
-        end
-        
-        if fs.exists(TEMP_FILE) then fs.delete(TEMP_FILE) end
-        drawUI()
-    else
-        showError("Neplatny format dat.")
-    end
+else
+    drawHeader("Zruseno")
+    status("Instalace byla prerusena uzivatelem.", colors.red)
+    -- Uklid instalatoru i pri zruseni
+    if fs.exists("internet_installer.java") then fs.delete("internet_installer.java") end
+    shell.run("wget " .. URL_INSTALLER .. " internet_installer.java")
+    sleep(2)
 end
 
-checkVersion()
-drawUI()
-
-while true do
-    term.setCursorPos(15, 1)
-    term.setBackgroundColor(colors.white)
-    term.setTextColor(colors.black)
-    
-    local domain_input = read()
-    
-    if domain_input and domain_input ~= "" and not tonumber(domain_input) then
-        fetchAndRun(domain_input)
-    else
-        term.setCursorPos(1, 4)
-        term.setBackgroundColor(BACKCOLOR)
-        term.setTextColor(colors.red)
-        print(" Neplatna URL adresa!")
-        sleep(2)
-        drawUI()
-    end
-end
+-- NAVRAT DO TERMINALU
+term.setBackgroundColor(colors.black)
+term.setTextColor(colors.white)
+term.clear()
+term.setCursorPos(1, 1)

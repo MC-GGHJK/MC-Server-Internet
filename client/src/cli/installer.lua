@@ -70,13 +70,13 @@ if rspn == "y" then
     fs.delete("gghjk-system/web-client.lua")
     fs.delete("web.lua")
     sleep(1)
-    
+    sleep(1)
     print(" Stahuji: web-client.lua")
     shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web-client.lua gghjk-system/web-client.lua")
-    
+    sleep(1)
     print(" Stahuji: web.lua")
     shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua")
-    
+    sleep(1)
     print(" Aktualizace instalatoru...")
     fs.delete('internet_installer.java')
     shell.run('wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua internet_installer.java')

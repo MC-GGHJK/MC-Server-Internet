@@ -1,139 +1,163 @@
+-- KONFIGURACE
 local SERVER_ID = 133
 local TEMP_FILE = ".website.lua" 
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
--------------------------------------------
-local ver = 1.75
-local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
+local VER = 1.9
+local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
+-- PROMENNE
 local nver = "?"
-local r = http.get(nverurl)
+local w, h = term.getSize()
 
-if r then
-  nver = tonumber(r.readAll()) or "?"
-  r.close()
+-- INICIALIZACE MODEMU
+peripheral.find("modem", rednet.open)
+
+-- FUNKCE PRO KRESLENI UI
+local function drawUI()
+    term.setBackgroundColor(BACKCOLOR)
+    term.clear()
+    
+    -- Horni lista (Adresni radek)
+    term.setCursorPos(1, 1)
+    term.setBackgroundColor(colors.black)
+    term.clearLine()
+    term.setTextColor(colors.yellow)
+    term.write(" ADRESA > ")
+    
+    -- Dekorativni linka
+    term.setCursorPos(1, 2)
+    term.setBackgroundColor(BACKCOLOR)
+    term.setTextColor(colors.black)
+    term.write(string.rep("-", w))
+
+    -- Paticka (Verze a Info)
+    term.setTextColor(colors.white)
+    term.setCursorPos(1, h - 3)
+    term.write("(c) 2025-2026 GGHJK - Internet browser 2026")
+    
+    term.setCursorPos(1, h - 2)
+    term.write("Verze: " .. VER .. " / Dostupna: " .. nver)
+
+    -- Status aktualizace
+    term.setCursorPos(1, h - 1)
+    if nver == "?" then
+        term.setTextColor(colors.lightGray)
+        term.write("Nelze overit aktualizace.")
+    elseif VER < tonumber(nver or 0) then
+        term.setTextColor(colors.red)
+        term.write("Nova verze " .. nver .. " je dostupna!")
+    else
+        term.setTextColor(colors.green)
+        term.write("Prohlizec je aktualni.")
+    end
+
+    term.setTextColor(colors.lightGray)
+    term.setCursorPos(1, h)
+    term.write("Discord: #gghjk-internet")
+    
+    -- Nastaveni kurzoru zpet do adresniho radku
+    term.setCursorPos(11, 1)
+    term.setBackgroundColor(colors.black)
+    term.setTextColor(colors.white)
 end
 
-local w, h = term.getSize()
-    function loadUI()
-    term.clear()
+-- FUNKCE PRO KONTROLU VERZE
+local function checkVersion()
+    local r = http.get(NVERURL)
+    if r then
+        nver = r.readAll()
+        r.close()
+    end
+end
+
+-- POMOCNA FUNKCE PRO CHYBY
+local function showError(msg)
     term.setBackgroundColor(BACKCOLOR)
-    term.setTextColor(TEXTCOLOR)
-    term.clear()
-    term.setCursorPos(1,h-3)
-    term.write("(c)2025-2026 GGHJK - Internet browser 2026 Version "..ver)
-    term.setCursorPos(1,h-2)
-    term.write('Version '..ver..' / '..nver)
+    term.setTextColor(colors.red)
+    print("\n CHYBA: " .. msg)
+    sleep(3)
+    drawUI()
+end
 
-    if ver < nver then
-      term.setCursorPos(1,h-1)
-      term.write('A new version '..nver..' available!')
-    elseif ver >= nver then
-      term.setCursorPos(1,h-1)
-      term.write('You are up to date!')
-    elseif nver == "?" then
-      term.setCursorPos(1,h-1)
-      term.write('Unable to check for updates!')
-    elseif ver == nver then
-      term.setCursorPos(1,h-1)
-      term.write('You are up to date!')
-    else
-      term.setCursorPos(1,h-1)
-      term.write('Unable to check for updates!')
-    end
-
-    term.setCursorPos(1,h)
-    term.write("More at discord, #gghjk-internet.")
-    term.setCursorPos(1,2)
-    term.write("------------------------------------------------------------------------------------------------------------------------------------------------------")
-    term.setCursorPos(1,1)
-    term.write("Adresa> ")
-    end
-
-loadUI()
-
+-- FUNKCE PRO NACITANI STRANEK
 local function fetchAndRun(domain)
-    print("\n--- FETCHING: " .. domain .. " ---")
+    term.setBackgroundColor(BACKCOLOR)
+    term.setCursorPos(1, 4)
+    term.setTextColor(colors.white)
+    print(" Pripojovani k: " .. domain .. "...")
+
     rednet.send(SERVER_ID, domain) 
-    
     local sender_id, file_code = rednet.receive(5) 
     
-    if file_code == nil then
-        print("ERROR: Server neodpovedel vcas nebo odeslal neplatnou odpoved.")
-        print("Zkontrolujte pripojeni k siti nebo spravnost domeny.")
-        print("Polud problem pretrva, Kontaktujte podporu.")
-        print("Timed Out.")
-        print("--------------------------------------------------")
-        sleep(3)
-        loadUI()
+    if not file_code then
+        showError("Server neodpovedel (Timed Out).")
         return
     end
 
     if file_code == "404 NOT FOUND" then
-        print("ERROR: Domena '" .. domain .. "' nebyla nalezena (404: Forbidden).")
-        print("--------------------------------------------------")
-        sleep(3)
-        loadUI()
+        showError("Domena '" .. domain .. "' nebyla nalezena.")
         return
     end
     
-    if file_code and type(file_code) == "string" then
-        
-        local sanitized_code = string.gsub(file_code, "^%s*(.-)%s*$", "%1")
-        sanitized_code = string.gsub(sanitized_code, "\xEF\xBB\xBF", "")
+    if type(file_code) == "string" then
+        -- Vymazani BOM a mezer
+        local sanitized_code = file_code:gsub("^\xEF\xBB\xBF", ""):gsub("^%s*(.-)%s*$", "%1")
 
-        local temp_file_handle = fs.open(TEMP_FILE, "w")
-        temp_file_handle.write(sanitized_code)
-        temp_file_handle.close()
+        local f = fs.open(TEMP_FILE, "w")
+        f.write(sanitized_code)
+        f.close()
         
-        print("Code received. Starting program...")
+        print(" Kod prijat. Spoustim...")
+        sleep(0.5)
         
-        local success, err_msg = pcall(function()
-        term.clear()
-        term.setBackgroundColor(colors.black)
-        term.setTextColor(colors.white)
-        term.clear()
-        sleep(0.1)
+        -- SPUSTENI STRANKY
+        local success, err = pcall(function()
+            term.setBackgroundColor(colors.black)
+            term.setTextColor(colors.white)
+            term.clear()
+            term.setCursorPos(1, 1)
             shell.run(TEMP_FILE) 
         end)
         
         if not success then
-            print("\n!!! Program execution failed! !!!")
-            print("Details: " .. tostring(err_msg))
-            print("File not deleted. Check '"..TEMP_FILE.."' for errors.")
-            print("--------------------------------------------------")
+            term.setBackgroundColor(BACKCOLOR)
+            term.setTextColor(colors.red)
+            print("\n!!! Program selhal !!!")
+            print("Detaily: " .. tostring(err))
+            sleep(5)
         else
-            print("\nProgram finished successfully.")
-            print("--------------------------------------------------")
-            fs.delete(TEMP_FILE)
-            loadUI()
+            print("\n Program uspesne ukoncen.")
+            sleep(1.5)
         end
         
+        if fs.exists(TEMP_FILE) then fs.delete(TEMP_FILE) end
+        drawUI()
     else
-        print("ERROR: Received data was not a valid code string (Type: " .. type(file_code) .. ").")
-        print("Cannot execute.")
-        print("Contact support if the problem persists.")
-        print("---------------------------------------------------")
-        sleep(3)
-        loadUI()
+        showError("Prijata data nejsou platny kod.")
     end
 end
 
-peripheral.find("modem", rednet.open)
+-- START PROGRAMU
+checkVersion()
+drawUI()
 
+-- HLAVNI SMYCKA
 while true do
+    term.setCursorPos(11, 1)
+    term.setBackgroundColor(colors.black)
+    term.setTextColor(colors.white)
     
     local domain_input = read() 
     
-    if domain_input and domain_input ~= "" and domain_input ~= "0" and tonumber(domain_input) == nil then
+    if domain_input and domain_input ~= "" and not tonumber(domain_input) then
         fetchAndRun(domain_input)
     else
-        print("Invalid input. Please enter a domain name.")
-        print("Domain names cannot be empty, '0', or purely numeric.")
-        print("Try again.")
-        print("---------------------------------------------------")
-        print("")
-        sleep(3)
-        loadUI()
+        term.setCursorPos(1, 4)
+        term.setBackgroundColor(BACKCOLOR)
+        term.setTextColor(colors.red)
+        print(" Neplatna adresa! Zadejte nazev domeny.")
+        sleep(2)
+        drawUI()
     end
 end

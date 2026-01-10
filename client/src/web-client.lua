@@ -1,118 +1,163 @@
--- GGHJK INTERNET UPDATER v1.39
--- Bez diakritiky pro maximalni kompatibilitu
-
-local URL_VERSION = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
-local URL_SRC_CLIENT = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web-client.lua'
-local URL_SRC_WEB = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua'
-local URL_INSTALLER = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua'
-
-local IVERSION = 1.39
-local TEXTCOLOR = colors.orange
+-- KONFIGURACE
+local SERVER_ID = 133
+local TEMP_FILE = ".website.lua" 
 local BACKCOLOR = colors.gray
+local TEXTCOLOR = colors.orange
+local VER = 1.75
+local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
+
+-- PROMENNE
+local nver = "?"
 local w, h = term.getSize()
 
--- FUNKCE PRO UI
-local function drawHeader(title)
+-- INICIALIZACE MODEMU
+peripheral.find("modem", rednet.open)
+
+-- FUNKCE PRO KRESLENI UI
+local function drawUI()
     term.setBackgroundColor(BACKCOLOR)
     term.clear()
+    
+    -- Horni lista (Adresni radek)
     term.setCursorPos(1, 1)
     term.setBackgroundColor(colors.black)
-    term.setTextColor(colors.yellow)
     term.clearLine()
-    print(" GGHJK UPDATER - " .. (title or "Sytem"))
+    term.setTextColor(colors.yellow)
+    term.write(" ADRESA > ")
+    
+    -- Dekorativni linka
+    term.setCursorPos(1, 2)
     term.setBackgroundColor(BACKCOLOR)
-    term.setTextColor(TEXTCOLOR)
+    term.setTextColor(colors.black)
+    term.write(string.rep("-", w))
+
+    -- Paticka (Verze a Info)
+    term.setTextColor(colors.white)
+    term.setCursorPos(1, h - 3)
+    term.write("(c) 2025-2026 GGHJK - Internet browser 2026")
+    
+    term.setCursorPos(1, h - 2)
+    term.write("Verze: " .. VER .. " / Dostupna: " .. nver)
+
+    -- Status aktualizace
+    term.setCursorPos(1, h - 1)
+    if nver == "?" then
+        term.setTextColor(colors.lightGray)
+        term.write("Nelze overit aktualizace.")
+    elseif VER < tonumber(nver or 0) then
+        term.setTextColor(colors.red)
+        term.write("Nova verze " .. nver .. " je dostupna!")
+    else
+        term.setTextColor(colors.green)
+        term.write("Prohlizec je aktualni.")
+    end
+
+    term.setTextColor(colors.lightGray)
+    term.setCursorPos(1, h)
+    term.write("Discord: #gghjk-internet")
+    
+    -- Nastaveni kurzoru zpet do adresniho radku
+    term.setCursorPos(11, 1)
+    term.setBackgroundColor(colors.black)
+    term.setTextColor(colors.white)
 end
 
-local function status(msg, color)
-    term.setTextColor(color or colors.white)
-    print(" > " .. msg)
+-- FUNKCE PRO KONTROLU VERZE
+local function checkVersion()
+    local r = http.get(NVERURL)
+    if r then
+        nver = r.readAll()
+        r.close()
+    end
+end
+
+-- POMOCNA FUNKCE PRO CHYBY
+local function showError(msg)
+    term.setBackgroundColor(BACKCOLOR)
+    term.setTextColor(colors.red)
+    print("\n CHYBA: " .. msg)
+    sleep(3)
+    drawUI()
+end
+
+-- FUNKCE PRO NACITANI STRANEK
+local function fetchAndRun(domain)
+    term.setBackgroundColor(BACKCOLOR)
+    term.setCursorPos(1, 4)
+    term.setTextColor(colors.white)
+    print(" Pripojovani k: " .. domain .. "...")
+
+    rednet.send(SERVER_ID, domain) 
+    local sender_id, file_code = rednet.receive(5) 
+    
+    if not file_code then
+        showError("Server neodpovedel (Timed Out).")
+        return
+    end
+
+    if file_code == "404 NOT FOUND" then
+        showError("Domena '" .. domain .. "' nebyla nalezena.")
+        return
+    end
+    
+    if type(file_code) == "string" then
+        -- Vymazani BOM a mezer
+        local sanitized_code = file_code:gsub("^\xEF\xBB\xBF", ""):gsub("^%s*(.-)%s*$", "%1")
+
+        local f = fs.open(TEMP_FILE, "w")
+        f.write(sanitized_code)
+        f.close()
+        
+        print(" Kod prijat. Spoustim...")
+        sleep(0.5)
+        
+        -- SPUSTENI STRANKY
+        local success, err = pcall(function()
+            term.setBackgroundColor(colors.black)
+            term.setTextColor(colors.white)
+            term.clear()
+            term.setCursorPos(1, 1)
+            shell.run(TEMP_FILE) 
+        end)
+        
+        if not success then
+            term.setBackgroundColor(BACKCOLOR)
+            term.setTextColor(colors.red)
+            print("\n!!! Program selhal !!!")
+            print("Detaily: " .. tostring(err))
+            sleep(5)
+        else
+            print("\n Program uspesne ukoncen.")
+            sleep(1.5)
+        end
+        
+        if fs.exists(TEMP_FILE) then fs.delete(TEMP_FILE) end
+        drawUI()
+    else
+        showError("Prijata data nejsou platny kod.")
+    end
 end
 
 -- START PROGRAMU
-drawHeader("Kontrola")
-status("Overovani verze na GitHubu...", colors.lightGray)
+checkVersion()
+drawUI()
 
-local nver = "?"
-local r = http.get(URL_VERSION)
-if r then
-    nver = r.readAll():gsub("%s+", "") -- Odstrani mezery/radky
-    r.close()
-end
-
-sleep(1)
-status("Aktualni verze na serveru: " .. nver, colors.green)
-sleep(1)
-
--- INFORMACE O INSTALACI
-drawHeader("Instalace")
-print("\n Chysta se aktualizace systemu.")
-term.setTextColor(colors.red)
-print(" Odstrani se:")
-print(" - gghjk-system/web-client.lua")
-print(" - web.lua")
-
-print("\n")
-term.setTextColor(colors.green)
-print(" Prida se:")
-print(" - gghjk-system/web-client.lua")
-print(" - web.lua")
-
-print("\n")
-term.setTextColor(colors.yellow)
-write(" Pokracovat v instalaci? (Y/N): ")
-local rspn = read():lower()
-
-if rspn == "y" then
-    drawHeader("Probiha zapis")
-    status("Instalator v" .. IVERSION .. " spusten.", colors.yellow)
-    status("Cilova verze: " .. nver, colors.yellow)
-    
-    -- MAZANI STARYCH SOUBORU
-    status("Cisteni starych souboru...", colors.lightGray)
-    if fs.exists("gghjk-system/web-client.lua") then fs.delete("gghjk-system/web-client.lua") end
-    if fs.exists("web.lua") then fs.delete("web.lua") end
-    sleep(1.5)
-
-    -- STAHYOVANI
-    status("Stahovani z GitHubu...", colors.white)
-    
-    -- Web Client
-    shell.run("wget " .. URL_SRC_CLIENT .. " gghjk-system/web-client.lua")
-    status("Soubor 'web-client.lua' ulozen.", colors.green)
-    
-    -- Web script
-    shell.run("wget " .. URL_SRC_WEB .. " web.lua")
-    status("Soubor 'web.lua' ulozen.", colors.green)
-    
-    -- Update instalatoru (prejmenovano z .java na .lua pro logiku)
-    if fs.exists("internet_installer.java") then fs.delete("internet_installer.java") end
-    shell.run("wget " .. URL_INSTALLER .. " internet_installer.java")
-    
-    status("Cisteni docasnych souboru...", colors.lightGray)
-    sleep(2)
-
-    drawHeader("Hotovo")
-    term.setTextColor(colors.green)
-    print("\n INSTALACE USPESNE DOKONCENA!")
+-- HLAVNI SMYCKA
+while true do
+    term.setCursorPos(11, 1)
+    term.setBackgroundColor(colors.black)
     term.setTextColor(colors.white)
-    print(" ------------------------------------------------")
-    print(" Webovy klient spustite prikazem: web")
-    print(" Nedotykejte se souboru v 'gghjk-system/'.")
-    print(" ------------------------------------------------")
-    sleep(5)
-
-else
-    drawHeader("Zruseno")
-    status("Instalace byla prerusena uzivatelem.", colors.red)
-    -- Uklid instalatoru i pri zruseni
-    if fs.exists("internet_installer.java") then fs.delete("internet_installer.java") end
-    shell.run("wget " .. URL_INSTALLER .. " internet_installer.java")
-    sleep(2)
+    
+    local domain_input = read() 
+    
+    if domain_input and domain_input ~= "" and not tonumber(domain_input) then
+        fetchAndRun(domain_input)
+    else
+        term.setCursorPos(1, 4)
+        term.setBackgroundColor(BACKCOLOR)
+        term.setTextColor(colors.red)
+        print(" Neplatna adresa! Zadejte nazev domeny.")
+        sleep(2)
+        drawUI()
+    end
 end
-
--- NAVRAT DO TERMINALU
-term.setBackgroundColor(colors.black)
-term.setTextColor(colors.white)
-term.clear()
-term.setCursorPos(1, 1)

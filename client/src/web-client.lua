@@ -1,4 +1,3 @@
--- KONFIGURACE
 local SERVER_ID = 133
 local TEMP_FILE = ".website.lua" 
 local BACKCOLOR = colors.gray
@@ -6,32 +5,26 @@ local TEXTCOLOR = colors.orange
 local VER = 1.75
 local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
--- PROMENNE
 local nver = "?"
 local w, h = term.getSize()
 
--- INICIALIZACE MODEMU
 peripheral.find("modem", rednet.open)
 
--- FUNKCE PRO KRESLENI UI
 local function drawUI()
     term.setBackgroundColor(BACKCOLOR)
     term.clear()
     
-    -- Horni lista (Adresni radek)
     term.setCursorPos(1, 1)
     term.setBackgroundColor(colors.black)
     term.clearLine()
     term.setTextColor(colors.yellow)
     term.write(" ADRESA > ")
     
-    -- Dekorativni linka
     term.setCursorPos(1, 2)
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(colors.black)
     term.write(string.rep("-", w))
 
-    -- Paticka (Verze a Info)
     term.setTextColor(colors.white)
     term.setCursorPos(1, h - 3)
     term.write("(c) 2025-2026 GGHJK - Internet browser 2026")
@@ -39,7 +32,6 @@ local function drawUI()
     term.setCursorPos(1, h - 2)
     term.write("Verze: " .. VER .. " / Dostupna: " .. nver)
 
-    -- Status aktualizace
     term.setCursorPos(1, h - 1)
     if nver == "?" then
         term.setTextColor(colors.lightGray)
@@ -56,13 +48,11 @@ local function drawUI()
     term.setCursorPos(1, h)
     term.write("Discord: #gghjk-internet")
     
-    -- Nastaveni kurzoru zpet do adresniho radku
     term.setCursorPos(11, 1)
     term.setBackgroundColor(colors.black)
     term.setTextColor(colors.white)
 end
 
--- FUNKCE PRO KONTROLU VERZE
 local function checkVersion()
     local r = http.get(NVERURL)
     if r then
@@ -71,7 +61,6 @@ local function checkVersion()
     end
 end
 
--- POMOCNA FUNKCE PRO CHYBY
 local function showError(msg)
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(colors.red)
@@ -80,7 +69,6 @@ local function showError(msg)
     drawUI()
 end
 
--- FUNKCE PRO NACITANI STRANEK
 local function fetchAndRun(domain)
     term.setBackgroundColor(BACKCOLOR)
     term.setCursorPos(1, 4)
@@ -101,7 +89,6 @@ local function fetchAndRun(domain)
     end
     
     if type(file_code) == "string" then
-        -- Vymazani BOM a mezer
         local sanitized_code = file_code:gsub("^\xEF\xBB\xBF", ""):gsub("^%s*(.-)%s*$", "%1")
 
         local f = fs.open(TEMP_FILE, "w")
@@ -111,7 +98,6 @@ local function fetchAndRun(domain)
         print(" Kod prijat. Spoustim...")
         sleep(0.5)
         
-        -- SPUSTENI STRANKY
         local success, err = pcall(function()
             term.setBackgroundColor(colors.black)
             term.setTextColor(colors.white)
@@ -138,11 +124,9 @@ local function fetchAndRun(domain)
     end
 end
 
--- START PROGRAMU
 checkVersion()
 drawUI()
 
--- HLAVNI SMYCKA
 while true do
     term.setCursorPos(11, 1)
     term.setBackgroundColor(colors.black)

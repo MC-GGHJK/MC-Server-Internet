@@ -1,104 +1,180 @@
--- Download a verze
+--Download
+
 local nverurl = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
+
+
+
 local nver = "?"
+
 local r = http.get(nverurl)
 
+
+
 if r then
-  nver = r.readAll():gsub("%s+", "") -- Odstrani konce radku
+
+  nver = tonumber(r.readAll()) or "?"
+
   r.close()
+
 end
 
-local iversion = 1.7
+local iversion = 1.6
+
 local TEXTCOLOR = colors.orange
+
 local BACKCOLOR = colors.gray
 
--- Pomocna funkce pro zahlavi
-local function drawHeader()
-    term.setBackgroundColor(BACKCOLOR)
-    term.clear()
-    term.setCursorPos(1,1)
-    term.setBackgroundColor(colors.black)
-    term.setTextColor(colors.yellow)
-    term.clearLine()
-    print(" GGHJK UPDATE CLIENT - v" .. iversion)
-    term.setBackgroundColor(BACKCOLOR)
-    term.setTextColor(TEXTCOLOR)
-end
+ 
 
-drawHeader()
-print("\n Vitejte v Update Clientu!")
-sleep(2)
-print(" Kontrola aktualizaci...")
-print(" Nacitani updateru...")
-sleep(2)
+term.setBackgroundColor(BACKCOLOR)
 
-drawHeader()
-print("\n Nova verze na serveru: " .. nver)
-print(" Spousteni...")
-sleep(2)
+term.setTextColor(TEXTCOLOR)
 
-drawHeader()
-term.setTextColor(colors.red)
-print(" Odstrani se:")
-print(" - gghjk-system/web-client.lua")
-print(" - web.lua")
-
-print("\n")
-term.setTextColor(colors.green)
-print(" Prida se:")
-print(" - gghjk-system/web-client.lua")
-print(" - web.lua")
-
-print("\n")
-term.setTextColor(colors.white)
-print(" Napiste Y pro instalaci")
-print(" Napiste N pro zruseni")
-print("")
-write(" Volba > ")
-
-local rspn = read():lower()
-
-if rspn == "y" then
-    drawHeader()
-    print("\n Spoustim instalaci v" .. iversion)
-    sleep(2)
-    print(" Instaluji internet verzi " .. nver)
-    print(" Pripojovani k GitHubu...")
-    sleep(2)
-    
-    print(" Stahovani dat...")
-    fs.delete("gghjk-system/web-client.lua")
-    fs.delete("web.lua")
-    sleep(1)
-    sleep(1)
-    print(" Stahuji: web-client.lua")
-    shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web-client.lua gghjk-system/web-client.lua")
-    sleep(1)
-    print(" Stahuji: web.lua")
-    shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua")
-    sleep(1)
-    print(" Aktualizace instalatoru...")
-    fs.delete('internet_installer.java')
-    shell.run('wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua internet_installer.java')
-    
-    print("\n-------------------------------------------")
-    print(" Neotevirejte soubory v gghjk-system/")
-    print(" Spusteni webu: prikaz 'web'")
-    print(" INSTALACE DOKONCENA!")
-    sleep(5)
-
-elseif rspn == "n" then
-    drawHeader()
-    print("\n Ruseni instalace...")
-    fs.delete('internet_installer.java')
-    shell.run('wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua internet_installer.java')
-    sleep(2)
-    print(" Instalace zrusena.")
-    sleep(1)
-end
-
--- Reset terminalu
-term.setBackgroundColor(colors.black)
-term.setTextColor(colors.white)
 term.clear()
-term.setCursorPos(1,1)
+
+print("Welcome to the Update Client!")
+
+sleep(2)
+
+print("Checking for updates...")
+
+print("Loading updater...")
+
+sleep(5)
+
+sleep(2)
+
+print("Current newest version: "..nver)
+
+print("Launching updater...")
+
+sleep(2)
+
+term.clear()
+
+print("Odstrani se:")
+
+print("-gghjk-system/web-client.lua")
+
+print("-web.lua")
+
+print("")
+
+print("Prida se:")
+
+print("-gghjk-client/web-client.lua")
+
+print("-web.lua")
+
+print("")
+
+print("Napiste Y/y pro instalaci")
+
+print("Nebo N/n pro zruseni")
+
+print("")
+
+local rspn = read()
+
+if rspn == "Y" or rspn == "y" then
+
+print('Running Installer Version '..iversion.. ' Please Wait..' )
+
+sleep(2)
+
+print("")
+
+print('Installing Internet Version ' ..nver.. ' Please Wait...')
+
+print("")
+
+print("Connecting to https://raw.githubusercontent/MC-GGHJK/MC-Server-Internet/Client")
+
+print("Connecting to Server...")
+
+print("")
+
+sleep(10)
+
+print("Downloading...")
+
+fs.delete("gghjk-system/web-client.lua")
+
+fs.delete("web.lua")
+
+sleep(2)
+
+print("Downloading web-client.lua...")
+
+shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web-client.lua gghjk-system/web-client.lua")
+
+sleep(2)
+
+print("Downloading web.lua...")
+
+sleep(2)
+
+shell.run("wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/web.lua")
+
+sleep(2)
+
+print("Connecting to Server https://download.gghjk.net/mc/internet/client/src/")
+
+fs.delete('internet_installer.java')
+
+shell.run('wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua internet_installer.java')
+
+sleep(5)
+
+print('')
+
+print("")
+
+print("Dont open gghjk-system/web-client.lua  Its System file of GGHJk System")
+
+print('To run web client "type web" in the terminal')
+
+print('Web client directory: web.lua')
+
+print("Installation Complete!")
+
+sleep(5)
+
+elseif rspn == "N" or rspn == "n" then
+
+print("Canceling Installation...")
+sleep(2)
+
+fs.delete('internet_installer.java')
+
+shell.run('wget https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/src/cli/install.lua internet_installer.java')
+
+sleep(10)
+
+print("Installation Canceled.")
+
+sleep(0.9)
+
+term.clear()
+
+term.setBackgroundColor(colors.black)
+
+term.setTextColor(colors.white)
+
+term.clear()
+
+else
+
+return
+
+end
+
+term.clear()
+
+term.setBackgroundColor(colors.black)
+
+term.setTextColor(colors.white)
+
+term.clear()
+
+--End Download

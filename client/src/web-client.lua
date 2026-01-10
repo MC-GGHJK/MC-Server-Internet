@@ -2,7 +2,7 @@ local SERVER_ID = 133
 local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
-local VER = 1.9
+local ver = 2.0
 local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -18,7 +18,7 @@ local function drawUI()
     term.setBackgroundColor(colors.white)
     term.clearLine()
     term.setTextColor(colors.gray)
-    term.write(" (i)  gghjk://")
+    term.write("gghjk://")
     
     term.setCursorPos(1, 2)
     term.setBackgroundColor(BACKCOLOR)

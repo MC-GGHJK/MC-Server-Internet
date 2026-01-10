@@ -3,7 +3,7 @@ local SERVER_ID = 133
 local TEMP_FILE = ".website.lua"
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
-local VER = 2.0
+local VER = 1.9
 local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 -- PROMENNE
@@ -19,27 +19,27 @@ local function drawUI()
     term.setBackgroundColor(BACKCOLOR)
     term.clear()
     
-    -- 1. VRSTVA: Simulace zalozek (Tabs bar)
+    -- 1. LISTA: Zalozky (Tabs bar)
     term.setCursorPos(1, 1)
     term.setBackgroundColor(colors.lightGray)
     term.clearLine()
     term.setTextColor(colors.gray)
     term.write(" [ Novy tab ]  [ Domu ]  [ + ]")
 
-    -- 2. VRSTVA: Adresni radek (Address bar)
+    -- 2. LISTA: Adresni radek (Address bar)
     term.setCursorPos(1, 2)
     term.setBackgroundColor(colors.white)
     term.clearLine()
     term.setTextColor(colors.gray)
     term.write(" (i)  gghjk://")
     
-    -- 3. VRSTVA: Dekorativni linka pod listou
+    -- 3. LISTA: Dekorativni linka pod listou
     term.setCursorPos(1, 3)
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(colors.black)
     term.write(string.rep("-", w))
 
-    -- 4. VRSTVA: Stavova lista (Taskbar/Footer)
+    -- 4. LISTA: Stavova lista (Taskbar/Footer)
     term.setBackgroundColor(colors.black)
     term.setCursorPos(1, h)
     term.clearLine()
@@ -48,23 +48,27 @@ local function drawUI()
     term.setTextColor(colors.lightGray)
     term.write(" v" .. VER)
     
-    -- Status aktualizace vpravo
-    local statusMsg = "System OK"
+    -- LOGIKA CHECKOVANI UPDATU (Vraceno zpet)
+    local statusMsg = ""
     local statusColor = colors.green
     
+    local num_nver = tonumber(nver)
     if nver == "?" then
-        statusMsg = "Offline Check"
+        statusMsg = "Update check failed"
         statusColor = colors.yellow
-    elseif VER < tonumber(nver or 0) then
-        statusMsg = "Update available (" .. nver .. ")"
+    elseif VER < (num_nver or 0) then
+        statusMsg = "Update available: v" .. nver
         statusColor = colors.red
+    elseif VER >= (num_nver or 0) then
+        statusMsg = "System Up-to-date"
+        statusColor = colors.green
     end
     
     term.setCursorPos(w - #statusMsg, h)
     term.setTextColor(statusColor)
     term.write(statusMsg)
 
-    -- 5. VRSTVA: Informacni panel nad patickou
+    -- 5. LISTA: Informacni panel nad patickou
     term.setBackgroundColor(BACKCOLOR)
     term.setTextColor(colors.white)
     term.setCursorPos(1, h - 2)
@@ -73,7 +77,7 @@ local function drawUI()
     term.setTextColor(colors.lightGray)
     term.write("Discord: #gghjk-internet")
     
-    -- Nastaveni kurzoru do adresniho radku (za gghjk://)
+    -- Nastaveni kurzoru do adresniho radku
     term.setCursorPos(15, 2)
     term.setBackgroundColor(colors.white)
     term.setTextColor(colors.black)
@@ -83,7 +87,8 @@ end
 local function checkVersion()
     local r = http.get(NVERURL)
     if r then
-        nver = r.readAll():gsub("%s+", "")
+        local raw = r.readAll()
+        nver = raw:gsub("%s+", "") -- Vyčistí mezery a konce řádků
         r.close()
     end
 end
@@ -103,18 +108,18 @@ local function fetchAndRun(domain)
     term.setBackgroundColor(BACKCOLOR)
     term.setCursorPos(1, 5)
     term.setTextColor(colors.white)
-    print(" Propojovani s dns://" .. domain .. "...")
+    print(" Vyhledavam dns://" .. domain .. "...")
 
     rednet.send(SERVER_ID, domain)
     local sender_id, file_code = rednet.receive(5)
     
     if not file_code then
-        showError("Casovy limit vyprsel.")
+        showError("Server neodpovida (Timeout).")
         return
     end
 
     if file_code == "404 NOT FOUND" then
-        showError("Stranka nenalezena.")
+        showError("Stranka nebyla nalezena.")
         return
     end
     
@@ -125,10 +130,10 @@ local function fetchAndRun(domain)
         f.write(sanitized_code)
         f.close()
         
-        print(" Data prijata. Renderovani...")
+        print(" Stranka nactena. Spoustim...")
         sleep(0.5)
         
-        -- SPUSTENI STRANKY (FULLSCREEN EMULACE)
+        -- SPUSTENI (FULLSCREEN)
         local success, err = pcall(function()
             term.setBackgroundColor(colors.black)
             term.setTextColor(colors.white)
@@ -140,19 +145,14 @@ local function fetchAndRun(domain)
         if not success then
             term.setBackgroundColor(BACKCOLOR)
             term.setTextColor(colors.red)
-            print("\n CRASH: " .. tostring(err))
+            print("\n CHYBA PRI BĚHU: " .. tostring(err))
             sleep(5)
-        else
-            term.setBackgroundColor(BACKCOLOR)
-            term.setTextColor(colors.green)
-            print("\n Prenos ukoncen.")
-            sleep(1.5)
         end
         
         if fs.exists(TEMP_FILE) then fs.delete(TEMP_FILE) end
         drawUI()
     else
-        showError("Neplatny format dat.")
+        showError("Neplatna data ze serveru.")
     end
 end
 

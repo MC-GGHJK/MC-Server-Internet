@@ -1,4 +1,4 @@
-local GEMINI_API_KEY = "*****************"
+local GEMINI_API_KEY = "your_api_key_here" -- Replace with your actual API key
 local GEMINI_ENDPOINT = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=" .. GEMINI_API_KEY
 local MODEL = "gemini-2.5-flash"
 

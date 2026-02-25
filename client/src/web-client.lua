@@ -2,7 +2,7 @@ local SERVER_ID = 133
 local TEMP_FILE = ".website.lua" 
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
-local VER = 2.2
+local VER = 2.3
 local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"
@@ -46,7 +46,7 @@ local function drawUI()
 
     term.setTextColor(colors.lightGray)
     term.setCursorPos(1, h)
-    term.write("Discord: #gghjk-internet")
+    term.write("Discord: #gghjk-internet, Support: https://www.gghjk.qzz.io/support.php")
     
     term.setCursorPos(11, 1)
     term.setBackgroundColor(colors.black)

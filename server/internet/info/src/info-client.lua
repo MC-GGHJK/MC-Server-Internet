@@ -24,6 +24,7 @@ print("Chat Web: " .. chat_url)
 print("GitHub: " .. github_url)
 print("Report issues at: " .. report_url)
 print("More at discord, #gghjk-internet. Support at discord.gghjk.qzz.io")
+print("Support https://www.gghjk.qzz.io/support.php")
 print("(c)2025 GGHJK - Internet browser 2026")
 
 sleep(10)

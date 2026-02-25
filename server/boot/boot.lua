@@ -1,6 +1,6 @@
 local bootVersion = 1.0
 local path = "gghjk-system/web-client.lua"
-local bootFile = "/disk/internet/Server"
+local bootFile = "/disk/internet/startup.lua"
 
 term.setBackgroundColor(colors.black)
 term.setTextColor(colors.white)

@@ -156,9 +156,7 @@ while true do
     
     local domain_input = read() 
     
-    if domain_input and domain_input ~= "" and not tonumber(domain_input) then
         fetchAndRun(domain_input)
-    else
         term.setCursorPos(1, 4)
         term.setBackgroundColor(BACKCOLOR)
         term.setTextColor(colors.red)

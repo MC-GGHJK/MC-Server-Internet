@@ -1,6 +1,5 @@
 --DNS Records
 local DOMAIN_MAP = {
-    ["ai.net"] = "disk/internet/google/ai/src/ai-client",
     ["music.cc"] = "disk/internet/music/src/main.lua",
     ["news.net"] = "disk/internet/news/src/main.lua",
     ["update.net"] = "disk/internet/update/src/update.lua",
@@ -65,7 +64,7 @@ while true do
         end
         
         -- Krok 4: Odeslání odpovědi
-        rednet.send(client_id, code_to_send)
+        rednet.send(client_id, code_to_send, "gghjk-internet")
         log("Response sent to ID: " .. client_id .. ". Message size: " .. #code_to_send)
     else
         log("COMMUNICATION ERROR: Received message was not a string or was invalid.")

@@ -1,26 +1,30 @@
--- Absolutně minimální Rednet client
+-- Minimal Rednet client (fix nil)
 local SERVER_ID = 107
 local TEMP_FILE = ".website.lua"
 local PROTOCOL = "gghjk_internet"
 
-peripheral.find("modem", rednet.open)
+local modem = peripheral.find("modem")
+if not modem then
+    error("Žádný modem nenalezen!")
+end
+rednet.open(peripheral.getName(modem))
 
 while true do
     io.write("Doména: ")
     local domain = read()
-    if not domain or domain == "" then
-        print("Neplatná doména.")
-    else
+    if domain and domain ~= "" then
         rednet.send(SERVER_ID, domain, PROTOCOL)
         local sender, code = rednet.receive(PROTOCOL, 5)
-        if sender then
+        if sender == SERVER_ID and code then
             local f = fs.open(TEMP_FILE, "w")
             f.write(code)
             f.close()
             shell.run(TEMP_FILE)
             fs.delete(TEMP_FILE)
         else
-            print("Server neodpověděl.")
+            print("Server neodpověděl nebo poslal nil.")
         end
+    else
+        print("Neplatná doména.")
     end
 end

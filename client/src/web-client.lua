@@ -75,53 +75,75 @@ local function fetchAndRun(domain)
     term.setTextColor(colors.white)
     print(" Pripojovani k: " .. domain .. "...")
 
-    rednet.send(SERVER_ID, domain) 
-    local sender_id, file_code = rednet.receive(5) 
-    
-    if not file_code then
+    -- odeslání requestu
+    rednet.send(SERVER_ID, domain, PROTOCOL)
+
+    local sender_id, file_code = rednet.receive(PROTOCOL, 5)
+
+    -- ❌ timeout
+    if not sender_id then
         showError("Server neodpovedel (Timed Out).")
         return
     end
 
+    -- ❌ špatný sender
+    if sender_id ~= SERVER_ID then
+        showError("Prijata odpoved od neznameho serveru.")
+        return
+    end
+
+    -- ❌ nil ochrana
+    if not file_code then
+        showError("Server poslal prazdnou odpoved.")
+        return
+    end
+
+    -- ❌ 404
     if file_code == "404 NOT FOUND" then
         showError("Domena '" .. domain .. "' nebyla nalezena.")
         return
     end
-    
-    if type(file_code) == "string" then
-        local sanitized_code = file_code:gsub("^\xEF\xBB\xBF", ""):gsub("^%s*(.-)%s*$", "%1")
 
-        local f = fs.open(TEMP_FILE, "w")
-        f.write(sanitized_code)
-        f.close()
-        
-        print(" Kod prijat. Spoustim...")
-        sleep(0.5)
-        
-        local success, err = pcall(function()
-            term.setBackgroundColor(colors.black)
-            term.setTextColor(colors.white)
-            term.clear()
-            term.setCursorPos(1, 1)
-            shell.run(TEMP_FILE) 
-        end)
-        
-        if not success then
-            term.setBackgroundColor(BACKCOLOR)
-            term.setTextColor(colors.red)
-            print("\n!!! Program selhal !!!")
-            print("Detaily: " .. tostring(err))
-            sleep(5)
-        else
-            print("\n Program uspesne ukoncen.")
-            sleep(1.5)
-        end
-        
-        if fs.exists(TEMP_FILE) then fs.delete(TEMP_FILE) end
-        drawUI()
-    else
+    -- ❌ špatný typ
+    if type(file_code) ~= "string" then
         showError("Prijata data nejsou platny kod.")
+        return
     end
+
+    -- ✅ sanitizace
+    local sanitized_code = file_code
+        :gsub("^\xEF\xBB\xBF", "")
+        :gsub("^%s*(.-)%s*$", "%1")
+
+    -- uložení
+    local f = fs.open(TEMP_FILE, "w")
+    f.write(sanitized_code)
+    f.close()
+
+    print(" Kod prijat. Spoustim...")
+    sleep(0.5)
+
+    local success, err = pcall(function()
+        term.setBackgroundColor(colors.black)
+        term.setTextColor(colors.white)
+        term.clear()
+        term.setCursorPos(1, 1)
+        shell.run(TEMP_FILE)
+    end)
+
+    if not success then
+        term.setBackgroundColor(BACKCOLOR)
+        term.setTextColor(colors.red)
+        print("\n!!! Program selhal !!!")
+        print("Detaily: " .. tostring(err))
+        sleep(5)
+    else
+        print("\n Program uspesne ukoncen.")
+        sleep(1.5)
+    end
+
+    if fs.exists(TEMP_FILE) then fs.delete(TEMP_FILE) end
+    drawUI()
 end
 
 checkVersion()

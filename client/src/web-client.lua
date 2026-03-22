@@ -1,8 +1,8 @@
-local SERVER_ID = 133
+local SERVER_ID = 107
 local TEMP_FILE = ".website.lua" 
 local BACKCOLOR = colors.gray
 local TEXTCOLOR = colors.orange
-local VER = 2.3
+local VER = 2.31
 local NVERURL = 'https://raw.githubusercontent.com/MC-GGHJK/MC-Server-Internet/refs/heads/main/client/version/version.txt'
 
 local nver = "?"

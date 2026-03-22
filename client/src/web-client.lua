@@ -1,4 +1,55 @@
--- Minimal Rednet client (fix nil)
+-- Minimal Rednet Client (bez UI, čistě text)
+local SERVER_ID = 107
+local TEMP_FILE = ".website.lua"
+
+-- otevření modemu
+local modem = peripheral.find("modem")
+if not modem then error("Žádný modem nenalezen!") end
+rednet.open(peripheral.getName(modem))
+
+print("[CLIENT] Připojen, čekám na zadání domény.")
+
+while true do
+    io.write("Doména: ")
+    local domain = read()
+
+    -- kontrola vstupu
+    if not domain or domain == "" then
+        print("[CLIENT] Neplatná doména.")
+    else
+        -- lowercase a trim
+        domain = domain:lower():gsub("^%s*(.-)%s*$", "%1")
+
+        -- poslat požadavek
+        rednet.send(SERVER_ID, domain)
+
+        -- čekání na odpověď (timeout 5s)
+        local sender, code = rednet.receive(nil, 5)
+
+        -- validace odpovědi
+        if sender == SERVER_ID and code and type(code) == "string" then
+            -- zapis do TEMP_FILE
+            local f = fs.open(TEMP_FILE, "w")
+            f.write(code)
+            f.close()
+
+            print("[CLIENT] Kód přijat, spouštím...")
+            local success, err = pcall(function()
+                shell.run(TEMP_FILE)
+            end)
+
+            if not success then
+                print("[CLIENT] Chyba při spouštění: "..tostring(err))
+            else
+                print("[CLIENT] Program ukončen.")
+            end
+
+            fs.delete(TEMP_FILE)
+        else
+            print("[CLIENT] Server neodpověděl nebo poslal neplatná data.")
+        end
+    end
+end-- Minimal Rednet client (fix nil)
 local SERVER_ID = 107
 local TEMP_FILE = ".website.lua"
 local PROTOCOL = "gghjk_internet"
